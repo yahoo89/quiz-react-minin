@@ -14,7 +14,6 @@ class Quiz extends Component {
           { text: 'Question 2' },
           { text: 'Question 3' },
           { text: 'Question 4' }
-          { text: 'Question 5' }
         ]
       }
     ]
