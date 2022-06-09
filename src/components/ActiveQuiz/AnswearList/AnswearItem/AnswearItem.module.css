@@ -10,3 +10,11 @@
   background: rgba(255,255,255, .2);
   transition: background .3s ease-in-out;
 }
+
+.AnswearItem.success {
+  background: #008000;
+}
+
+.AnswearItem.error {
+  background: #ff0000;
+}

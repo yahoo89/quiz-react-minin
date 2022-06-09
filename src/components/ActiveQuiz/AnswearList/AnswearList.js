@@ -9,6 +9,8 @@ const AnswearList = props => (
         <AnswearItem
           key={index}
           answear={answear}
+          onAnswearClick={props.onAnswearClick}
+          answearStatus={props.answearStatus ? props.answearStatus[answear.id] : null}
         />
       )
     })}

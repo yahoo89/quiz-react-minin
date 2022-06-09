@@ -7,12 +7,16 @@ const ActiveQuiz = props => (
   <div className={classes.ActiveQuiz}>
     <p className={classes.Question}>
       <span>
-        <strong>2.</strong>&nbsp;
-        How are you?
+        <strong>{props.answearNumber}.</strong>&nbsp;
+        {props.question}
       </span>
-      <small>4 from 12</small>
+      <small>{props.answearNumber} from {props.quizLenght}</small>
     </p>
-    <AnswearList answears={props.answears} />
+    <AnswearList
+      answears={props.answears}
+      onAnswearClick={props.onAnswearClick}
+      answearStatus={props.answearStatus}
+    />
   </div>
 )
 
