@@ -1,17 +1,18 @@
 import React, { Component } from "react";
 import classes from "./Drawer.module.css"
+import Backdrop from "../../UI/Backdrop/Backdrop"
 
 const links = [
   1, 2, 3
 ]
 
-export default class Drawer extends Component {
+class Drawer extends Component {
 
   renderLinks() {
     return links.map((link, index) => {
       return (
         <li key={index}>
-          <a href="#">Link {link}</a>
+          <a>Link {link}</a>
         </li>
       )
     })
@@ -25,11 +26,16 @@ export default class Drawer extends Component {
     }
 
     return (
-      <nav className={cls.join(' ')}>
-        <ul>
-          {this.renderLinks()}
-        </ul>
-      </nav>
+      <>
+        <nav className={cls.join(' ')}>
+          <ul>
+            {this.renderLinks()}
+          </ul>
+        </nav>
+        {this.props.isOpen ? <Backdrop onClick={this.props.onClose} /> : null}
+      </>
     )
   }
 }
+
+export default Drawer
