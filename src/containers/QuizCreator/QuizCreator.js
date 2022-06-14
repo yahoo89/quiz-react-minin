@@ -3,18 +3,18 @@ import classes from "./QuizCreator.module.css"
 import Button from "../../components/UI/Button/Button"
 import Input from "../../components/UI/Input/Input"
 import Select from "../../components/UI/Select/Select";
-import { createControl } from "../../form/formFrameworks"
+import { createControl, validate, validateForm } from "../../form/formFrameworks"
 import Auxiliary from "../../hoc/Auxiliary/Auxiliary"
 
 function createOptionControl(number) {
   return createControl({
     label: `Option ${number}`,
-    errorMessage: "Field can't be empty",
+    errorMessage: "Field can\'t be empty",
     id: number
   }, { required: true })
 }
 
-function createFormControl() {
+function createFormControls() {
   return {
     question: createControl({
       label: 'Please, enter the question',
@@ -23,7 +23,7 @@ function createFormControl() {
     option1: createOptionControl(1),
     option2: createOptionControl(2),
     option3: createOptionControl(3),
-    option4: createOptionControl(4),
+    option4: createOptionControl(4)
   }
 }
 
@@ -31,17 +31,17 @@ export default class QuizCreator extends Component {
 
   state = {
     quiz: [],
-    rightAnswearId: 1,
-    formControls: createFormControl()
+    isFormValid: false,
+    rightAnswerId: 1,
+    formControls: createFormControls()
   }
 
   submitHandler = event => {
     event.preventDefault()
-
   }
 
-  addQuestinHandler = () => {
-
+  addQuestinHandler = event => {
+    event.preventDefault()
   }
 
   createQuizHandler = () => {
@@ -49,7 +49,19 @@ export default class QuizCreator extends Component {
   }
 
   changeHandler = (value, controlName) => {
+    const formControls = { ...this.state.formControls }
+    const control = { ...formControls[controlName] }
 
+    control.touched = true
+    control.value = value
+    control.valid = validate(control.value, control.validation)
+
+    formControls[controlName] = control
+
+    this.setState({
+      formControls,
+      isFormValid: validateForm(formControls)
+    })
   }
 
   renderControls() {
@@ -62,7 +74,7 @@ export default class QuizCreator extends Component {
             label={control.label}
             value={control.value}
             valid={control.valid}
-            shouldValidte={control.shouldValidte}
+            shouldValidate={!!control.validation}
             touched={control.touched}
             errorMessage={control.errorMessage}
             onChange={event => this.changeHandler(event.target.value, controlName)}
@@ -75,7 +87,7 @@ export default class QuizCreator extends Component {
 
   selectChangeHandler = event => {
     this.setState({
-      rightAnswearId: +event.target.value
+      rightAnswerId: +event.target.value
     })
   }
 
@@ -106,12 +118,14 @@ export default class QuizCreator extends Component {
             <Button
               type='primary'
               onClick={this.addQuestinHandler}
+              disabled={!this.state.isFormValid}
             >
               Add Question
             </Button>
             <Button
-              type='primary'
+              type='success'
               onClick={this.createQuizHandler}
+              disabled={this.state.quiz.length === 0}
             >
               Create Quiz
             </Button>
