@@ -1,8 +1,25 @@
 import React, { Component } from "react";
 import classes from './Quiz.module.css'
 import ActiveQuiz from "../../components/ActiveQuiz/ActiveQuiz"
-import FinishedQuiz from "../../components/FinishedQuiz/FinishedQuiz";
+import FinishedQuiz from "../../components/FinishedQuiz/FinishedQuiz"
+import axios from "../../axios/axios-quiz"
+import Loader from "../../components/UI/Loader/Loader"
+import { useParams } from 'react-router-dom'
 
+// const ProductScreen = () => {
+//   const params = useParams();
+
+//   console.log(params.id)
+//   return params.id;
+// };
+
+function withRouter(Component) {
+  function ComponentWithRouter(props) {
+    let params = useParams()
+    return <Component {...props} params={params} />
+  }
+  return ComponentWithRouter
+}
 
 class Quiz extends Component {
   state = {
@@ -10,30 +27,8 @@ class Quiz extends Component {
     isFinished: false,
     activeQuestion: 0,
     answearStatus: null, // {[id]: success error}
-    quiz: [
-      {
-        question: 'What color is the sky ?',
-        rightAnswearID: 2,
-        id: 1,
-        answears: [
-          { text: 'Red', id: 1 },
-          { text: 'Blue', id: 2 },
-          { text: 'Black', id: 3 },
-          { text: 'Green', id: 4 }
-        ]
-      },
-      {
-        question: 'When was the city of Lviv founded ?',
-        rightAnswearID: 3,
-        id: 2,
-        answears: [
-          { text: '1356', id: 1 },
-          { text: '1526', id: 2 },
-          { text: '1256', id: 3 },
-          { text: '1156', id: 4 }
-        ]
-      }
-    ]
+    quiz: [],
+    loading: true
   }
 
   onAnswearClickHandler = (answearId) => {
@@ -46,6 +41,7 @@ class Quiz extends Component {
 
     const question = this.state.quiz[this.state.activeQuestion]
     const results = this.state.results
+
 
     if (question.rightAnswearID === answearId) {
       if (!results[question.id]) {
@@ -96,27 +92,48 @@ class Quiz extends Component {
     })
   }
 
+  async componentDidMount() {
+    console.log(this.props.params.id)
+    try {
+      const response = await axios.get(`/quizes/${this.props.params.id}.json`)
+      const quiz = response.data
+
+      this.setState({
+        quiz,
+        loading: false
+      })
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
   render() {
     return (
       <div className={classes.Quiz}>
         <div className={classes.QuizWrapper}>
           <h1>Answear all questions</h1>
 
+
+          {/* {<ProductScreen />} */}
+
+
           {
-            this.state.isFinished
-              ? <FinishedQuiz
-                results={this.state.results}
-                quiz={this.state.quiz}
-                onRetry={this.retryHandler}
-              />
-              : <ActiveQuiz
-                answears={this.state.quiz[this.state.activeQuestion].answears}
-                question={this.state.quiz[this.state.activeQuestion].question}
-                onAnswearClick={this.onAnswearClickHandler}
-                quizLenght={this.state.quiz.length}
-                answearNumber={this.state.activeQuestion + 1}
-                answearStatus={this.state.answearStatus}
-              />
+            this.state.loading
+              ? <Loader />
+              : this.state.isFinished
+                ? <FinishedQuiz
+                  results={this.state.results}
+                  quiz={this.state.quiz}
+                  onRetry={this.retryHandler}
+                />
+                : <ActiveQuiz
+                  answears={this.state.quiz[this.state.activeQuestion].answears}
+                  question={this.state.quiz[this.state.activeQuestion].question}
+                  onAnswearClick={this.onAnswearClickHandler}
+                  quizLenght={this.state.quiz.length}
+                  answearNumber={this.state.activeQuestion + 1}
+                  answearStatus={this.state.answearStatus}
+                />
           }
         </div>
       </div>
@@ -124,4 +141,4 @@ class Quiz extends Component {
   }
 }
 
-export default Quiz
+export default withRouter(Quiz)

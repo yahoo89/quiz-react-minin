@@ -74,7 +74,7 @@ export default class QuizCreator extends Component {
     event.preventDefault()
 
     try {
-      await axios.post('https://react-quiz-e6e8a-default-rtdb.europe-west1.firebasedatabase.app/quizes.json', this.state.quiz)
+      await axios.post('quizes.json', this.state.quiz)
 
       this.setState({
         quiz: [],
