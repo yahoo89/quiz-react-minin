@@ -6,13 +6,6 @@ import axios from "../../axios/axios-quiz"
 import Loader from "../../components/UI/Loader/Loader"
 import { useParams } from 'react-router-dom'
 
-// const ProductScreen = () => {
-//   const params = useParams();
-
-//   console.log(params.id)
-//   return params.id;
-// };
-
 function withRouter(Component) {
   function ComponentWithRouter(props) {
     let params = useParams()
@@ -112,10 +105,6 @@ class Quiz extends Component {
       <div className={classes.Quiz}>
         <div className={classes.QuizWrapper}>
           <h1>Answear all questions</h1>
-
-
-          {/* {<ProductScreen />} */}
-
 
           {
             this.state.loading
