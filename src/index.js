@@ -4,11 +4,36 @@ import './index.css';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom'
 import reportWebVitals from './reportWebVitals';
+import { createStore, compose, applyMiddleware } from 'redux'
+import { Provider } from 'react-redux'
+import rootReducers from './store/reducers/rootReducers'
+import Immutable from 'immutable' // https://facebook.github.io/immutable-js/
+import thunk from 'redux-thunk';
+
+
+const composeEnhancers =
+  typeof window === 'object' &&
+    typeof window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ !== 'undefined'
+    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+      serialize: {
+        immutable: Immutable,
+      },
+    })
+    : compose;
+
+const store = createStore(
+  rootReducers,
+  composeEnhancers(
+    applyMiddleware(thunk)
+  )
+)
 
 const app = (
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>
+  <Provider store={store}>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </Provider>
 )
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
